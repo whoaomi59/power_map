@@ -3,6 +3,18 @@ import nmap
 import requests
 from vulners import VulnersApi
 
+
+baner = """
+██████╗  ██████╗ ██╗    ██╗███████╗██████╗     ███╗   ███╗ █████╗ ██████╗ 
+██╔══██╗██╔═══██╗██║    ██║██╔════╝██╔══██╗    ████╗ ████║██╔══██╗██╔══██╗
+██████╔╝██║   ██║██║ █╗ ██║█████╗  ██████╔╝    ██╔████╔██║███████║██████╔╝
+██╔═══╝ ██║   ██║██║███╗██║██╔══╝  ██╔══██╗    ██║╚██╔╝██║██╔══██║██╔═══╝ 
+██║     ╚██████╔╝╚███╔███╔╝███████╗██║  ██║    ██║ ╚═╝ ██║██║  ██║██║     
+╚═╝      ╚═════╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝     
+                                (whoaomi:))
+"""
+
+
 # Escaneo de puertos
 def scan_ports(ip):
     nm = nmap.PortScanner()
@@ -61,6 +73,7 @@ def search_vulnerabilities(service_name, version):
 
 # Herramienta principal
 if __name__ == "__main__":
+    print(baner)
     target_ip = input("Ingresa la IP objetivo: ")
     open_ports = scan_ports(target_ip)
 
