@@ -1,6 +1,7 @@
 import socket
 import nmap
-import vulners
+import requests
+from vulners import VulnersApi
 
 # Escaneo de puertos
 def scan_ports(ip):
@@ -22,10 +23,22 @@ def scan_ports(ip):
     
     return open_ports
 
+# Imprimir información sobre la vulnerabilidad
+def print_vulnerability_info(vuln):
+    title = vuln.get('title', 'No title available')
+    cve_id = vuln.get('id', 'No CVE ID available')
+    description = vuln.get('description', 'No description available')
+    url = vuln.get('url', 'No URL available')
+    cvss_score = vuln.get('cvss', {}).get('score', 'No CVSS score available')
+
+    print(f"- {title} (CVE: {cve_id}) - Severidad: {cvss_score}")
+    print(f"Descripción: {description}")
+    print(f"URL: {url}\n")
+
 # Búsqueda de vulnerabilidades
-# Configurar la API correctamente usando VulnersApi
 def search_vulnerabilities(service_name, version):
-    vulners_api = vulners.VulnersApi(api_key='408CIFQVYP45Y5KXRXMFN7WZB1RIGH3LHWIV6R3AQ2WEB7TEYHKHC4XU19B0BRP5')  # Asegúrate de usar tu API Key válida
+    api_key = '408CIFQVYP45Y5KXRXMFN7WZB1RIGH3LHWIV6R3AQ2WEB7TEYHKHC4XU19B0BRP5'  # Sustituye con tu API key válida
+    vulners_api = VulnersApi(api_key=api_key)
     query = f"{service_name} {version}"
     
     try:
@@ -33,15 +46,16 @@ def search_vulnerabilities(service_name, version):
         result = vulners_api.find_all(query)
         
         if result:
-            print(f"Vulnerabilidades encontradas para {service} versión {version}:")
+            print(f"Vulnerabilidades encontradas para {service_name} versión {version}:")
             for vuln in result:
-                print(f"Vulnerabilidades encontradas para {service} versión {version}:")
-                print(f"Descripción: {vuln['description']}\n")
+                print_vulnerability_info(vuln)
         else:
             print(f"No se encontraron vulnerabilidades para {service_name} versión {version}.")
     
     except requests.exceptions.HTTPError as http_err:
         print(f"Error HTTP: {http_err}")
+    except requests.exceptions.RequestException as req_err:
+        print(f"Error de solicitud: {req_err}")
     except Exception as e:
         print(f"Error al buscar vulnerabilidades: {e}")
 
