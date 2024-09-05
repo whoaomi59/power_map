@@ -2,7 +2,8 @@ import socket
 import nmap
 import requests
 from vulners import VulnersApi
-
+from tqdm import tqdm
+import time
 
 baner = """
 ██████╗  ██████╗ ██╗    ██╗███████╗██████╗     ███╗   ███╗ █████╗ ██████╗ 
@@ -13,7 +14,6 @@ baner = """
 ╚═╝      ╚═════╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝     
                                 (whoaomi:))
 """
-
 
 # Escaneo de puertos
 def scan_ports(ip):
@@ -27,7 +27,7 @@ def scan_ports(ip):
         for proto in nm[host].all_protocols():
             print(f"Protocolo: {proto}")
             ports = nm[host][proto].keys()
-            for port in ports:
+            for port in tqdm(ports, desc="Escaneando puertos", unit="puerto"):
                 service = nm[host][proto][port]['name']
                 version = nm[host][proto][port].get('version', 'Unknown')
                 print(f"Puerto: {port}\tServicio: {service}\tVersión: {version}")
@@ -59,7 +59,7 @@ def search_vulnerabilities(service_name, version):
         
         if result:
             print(f"Vulnerabilidades encontradas para {service_name} versión {version}:")
-            for vuln in result:
+            for vuln in tqdm(result, desc="Buscando vulnerabilidades", unit="vulnerabilidad"):
                 print_vulnerability_info(vuln)
         else:
             print(f"No se encontraron vulnerabilidades para {service_name} versión {version}.")
